@@ -55,7 +55,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # System settings for the virtual machine.
   vm_num_cpus = "2"
-  vm_memory = "2048"
+  vm_memory = "5048"
 
   ubuntu_mirror = ""
 
@@ -130,40 +130,32 @@ $provision_script = <<SCRIPT
 set -x
 set -e
 set -o pipefail
-
 # Code should go here, rather than tools/provision, only if it is
 # something that we don't want to happen when running provision in a
 # development environment not using Vagrant.
-
 # Set the Ubuntu mirror
 [ ! '#{ubuntu_mirror}' ] || sudo sed -i 's|http://\\(\\w*\\.\\)*archive\\.ubuntu\\.com/ubuntu/\\? |#{ubuntu_mirror} |' /etc/apt/sources.list
-
 # Set the MOTD on the system to have Zulip instructions
 sudo ln -nsf /srv/zulip/tools/setup/dev-motd /etc/update-motd.d/99-zulip-dev
 sudo rm -f /etc/update-motd.d/10-help-text
 sudo dpkg --purge landscape-client landscape-common ubuntu-release-upgrader-core update-manager-core update-notifier-common ubuntu-server
 sudo dpkg-divert --add --rename /etc/default/motd-news
 sudo sh -c 'echo ENABLED=0 > /etc/default/motd-news'
-
 # If the host is running SELinux remount the /sys/fs/selinux directory as read only,
 # needed for apt-get to work.
 if [ -d "/sys/fs/selinux" ]; then
     sudo mount -o remount,ro /sys/fs/selinux
 fi
-
 # Set default locale, this prevents errors if the user has another locale set.
 if ! grep -q 'LC_ALL=en_US.UTF-8' /etc/default/locale; then
     echo "LC_ALL=en_US.UTF-8" | sudo tee -a /etc/default/locale
 fi
-
 # Set an environment variable, so that we won't print the virtualenv
 # shell warning (it'll be wrong, since the shell is dying anyway)
 export SKIP_VENV_SHELL_WARNING=1
-
 # End `set -x`, so that the end of provision doesn't look like an error
 # message after a successful run.
 set +x
-
 # Check if the zulip directory is writable
 if [ ! -w /srv/zulip ]; then
     echo "The vagrant user is unable to write to the zulip directory."
@@ -180,7 +172,6 @@ fi
 # Provision the development environment
 ln -nsf /srv/zulip ~/zulip
 /srv/zulip/tools/provision
-
 # Run any custom provision hooks the user has configured
 if [ -f /srv/zulip/tools/custom_provision ]; then
     chmod +x /srv/zulip/tools/custom_provision

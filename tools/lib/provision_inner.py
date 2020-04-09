@@ -13,7 +13,7 @@ from scripts.lib.zulip_tools import run, run_as_root, OKBLUE, ENDC, \
 
 from version import PROVISION_VERSION
 
-from tools.setup.generate_zulip_bots_static_files import generate_zulip_bots_static_files
+#from tools.setup.generate_zulip_bots_static_files import generate_zulip_bots_static_files
 
 VENV_PATH = "/srv/zulip-py3-venv"
 VAR_DIR_PATH = os.path.join(ZULIP_PATH, 'var')
@@ -123,7 +123,7 @@ def main(options: argparse.Namespace) -> int:
     run(["tools/setup/emoji/build_emoji"])
 
     # copy over static files from the zulip_bots package
-    generate_zulip_bots_static_files()
+    #generate_zulip_bots_static_files()
 
     build_pygments_data_paths = ["tools/setup/build_pygments_data", "tools/setup/lang.json"]
     from pygments import __version__ as pygments_version
@@ -222,6 +222,8 @@ def main(options: argparse.Namespace) -> int:
     print("Cleaning var/ directory files...")
     var_paths = glob.glob('var/test*')
     var_paths.append('var/bot_avatar')
+    
+    """
     for path in var_paths:
         try:
             if os.path.isdir(path):
@@ -230,6 +232,7 @@ def main(options: argparse.Namespace) -> int:
                 os.remove(path)
         except FileNotFoundError:
             pass
+    """
 
     version_file = os.path.join(UUID_VAR_PATH, 'provision_version')
     print('writing to %s\n' % (version_file,))

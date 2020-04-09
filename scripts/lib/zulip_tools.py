@@ -412,7 +412,7 @@ def file_or_package_hash_updated(paths, hash_name, is_force, package_versions=[]
 
         if is_force or (new_hash != last_hash):
             hash_file.seek(0)
-            hash_file.truncate()
+            #hash_file.truncate()
             hash_file.write(new_hash)
             return True
     return False

@@ -14,9 +14,9 @@ def generate_zulip_bots_static_files() -> None:
     from zulip_bots.lib import get_bots_directory_path
 
     bots_dir = 'static/generated/bots'
-    if os.path.isdir(bots_dir):
+    #if os.path.isdir(bots_dir):
         # delete old static files, they could be outdated
-        shutil.rmtree(bots_dir)
+        #shutil.rmtree(bots_dir)
 
     os.makedirs(bots_dir, exist_ok=True)
 
